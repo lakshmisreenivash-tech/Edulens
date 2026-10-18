@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduLens | School Intelligence</title>
+<style>
+:root{--bg:#f4f6fb;--ink:#17243b;--muted:#738099;--line:#e5eaf2;--blue:#4359df;--navy:#18243c;--white:#fff;--green:#16866b;--amber:#b97817;--red:#c44848}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,Segoe UI,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.layout{display:grid;grid-template-columns:225px minmax(0,1fr);min-height:100vh}
+aside{background:var(--navy);color:#fff;padding:25px 15px;display:flex;flex-direction:column;gap:30px}
+.brand{display:flex;align-items:center;gap:10px;padding:0 8px}.logo{background:#6576ff;border-radius:12px;padding:9px;font-weight:800;font-size:18px}.brand strong{font-size:17px}.brand small{display:block;color:#aab5cc;font-size:11px}
+.navlabel{color:#8898b7;font-size:10px;letter-spacing:1.5px;padding:0 12px;margin-bottom:7px}
+.nav{display:flex;gap:11px;align-items:center;padding:12px;border-radius:9px;color:#c5cee0;text-decoration:none;margin:3px 0;cursor:pointer}
+.nav.active,.nav:hover{background:#2c3a59;color:#fff}.nav span{font-size:17px;width:22px}
+.side-note{margin-top:auto;border:1px solid #394663;border-radius:12px;padding:14px;color:#c5cee0;font-size:12px}.side-note b{display:block;color:#fff;margin-bottom:5px}
+main{min-width:0;padding:27px clamp(15px,3vw,38px) 40px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:27px}.eyebrow{font-size:11px;letter-spacing:1.3px;color:var(--muted);font-weight:700;text-transform:uppercase}.topbar h1{font-size:26px;letter-spacing:-.7px;margin:3px 0}.sub{color:var(--muted);font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:30px;padding:9px 13px;color:#4c5a70;font-size:12px}.dot{width:7px;height:7px;background:#22a77b;border-radius:50%}
+.section{display:none}.section.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:23px}
+.card{background:#fff;border:1px solid var(--line);border-radius:13px;padding:18px;min-width:0;box-shadow:0 2px 8px #1e315008}
+.stat-top{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:12px}.stat-icon{background:#edf0ff;color:var(--blue);border-radius:9px;padding:8px}.stat-number{font-size:29px;font-weight:750;letter-spacing:-1px;margin:14px 0 2px}.stat-foot{font-size:11px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:17px;margin-bottom:20px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.card-head h2{font-size:15px;margin:0}.card-head p{font-size:12px;color:var(--muted);margin:3px 0 0}
+.btn{border:0;border-radius:8px;background:var(--blue);color:white;padding:10px 14px;font-weight:650;font-size:12px}.btn:hover{filter:brightness(.94)}.btn.secondary{background:#eef1ff;color:#364bd0}.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn.small{padding:7px 10px}
+.barrow{display:grid;grid-template-columns:minmax(80px,1fr) 2fr 32px;gap:10px;align-items:center;margin:15px 0;font-size:12px}.track{height:8px;background:#edf0f6;border-radius:20px;overflow:hidden}.fill{height:100%;background:var(--blue);border-radius:20px}
+.notice{background:#f9faff;border:1px solid #e4e8ff;border-radius:10px;padding:12px 14px;color:#57648b;font-size:12px;margin-top:14px}
+.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}.field{border:1px solid #dfe5ef;background:#fff;border-radius:8px;padding:10px 11px;color:var(--ink);min-width:0}.filters input{flex:1;min-width:180px}.filters select{min-width:145px}
+.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;white-space:nowrap;font-size:12px}th{text-align:left;background:#f9fafe;color:#7b879a;font-size:10px;text-transform:uppercase;letter-spacing:.65px;padding:12px;border-bottom:1px solid var(--line)}td{padding:13px 12px;border-bottom:1px solid #edf0f5}tbody tr:hover{background:#fafbff}tbody tr:last-child td{border-bottom:0}.schoolname{font-weight:650;color:#253450}.muted{color:var(--muted)}.tag{border-radius:20px;padding:4px 8px;display:inline-block;font-size:10px;font-weight:700;background:#f0f2f6;color:#69758a}.tag.high,.tag.red{background:#fff0ef;color:#bd4444}.tag.medium,.tag.amber{background:#fff6e6;color:#a66b10}.tag.low,.tag.green{background:#e8f8f1;color:#138162}.linkbtn{border:0;background:none;color:var(--blue);font-weight:700;font-size:12px;padding:4px}
+.bottomrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;color:var(--muted);font-size:12px}.pager{display:flex;gap:6px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.formfield{display:flex;flex-direction:column;gap:6px}.formfield label{font-weight:650;font-size:12px}.formfield input,.formfield select,.formfield textarea{width:100%;border:1px solid #dfe5ef;border-radius:8px;padding:11px;background:#fff;color:var(--ink)}.formfield textarea{min-height:90px;resize:vertical}.span2{grid-column:1/-1}.formactions{display:flex;gap:9px;align-items:center;margin-top:16px}.message{margin-top:12px;font-size:12px;color:var(--green)}.message.error{color:var(--red)}
+.case-list{display:grid;gap:10px}.caseitem{border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.caseitem h3{font-size:13px;margin:0 0 5px}.caseitem p{font-size:12px;color:var(--muted);margin:0 0 7px}.case-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.empty{padding:28px;text-align:center;color:var(--muted);font-size:13px}.loading{padding:24px;color:var(--muted)}
+.modal{display:none;position:fixed;inset:0;background:#101a2e88;z-index:10;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.modalbox{width:min(650px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:15px;padding:22px}.modalhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.modalhead h2{font-size:18px;margin:0}.close{border:0;background:#edf0f6;border-radius:8px;padding:7px 11px}.detailgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.detail{background:#f8f9fc;border-radius:9px;padding:12px;overflow-wrap:anywhere}.detail small{display:block;color:var(--muted);margin-bottom:4px}.detail strong{font-size:13px}
+.toast{position:fixed;right:20px;bottom:20px;z-index:20;background:#1b2943;color:white;border-radius:10px;padding:13px 18px;box-shadow:0 8px 28px #0002;display:none;max-width:350px}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}}
+@media(max-width:650px){.layout{grid-template-columns:1fr}aside{padding:12px;gap:12px}.brand{padding:3px}.navgroup{display:flex;flex-wrap:wrap}.navlabel,.side-note{display:none}.nav{padding:8px;margin:0;font-size:12px}.topbar{align-items:flex-start;flex-direction:column}.stats{gap:9px}.card{padding:13px}.stat-number{font-size:24px}.formgrid{grid-template-columns:1fr}.span2{grid-column:auto}.caseitem{flex-direction:column}.detailgrid{grid-template-columns:1fr 1fr}}
+/* EduLens visual refresh */
+body {
+  background:
+    radial-gradient(ellipse at 90% 0%, #e7edff 0, transparent 34rem),
+    #f3f6fc;
+  color: #182742;
+  font-family: Inter, "Segoe UI", sans-serif;
+}
+
+.layout {
+  grid-template-columns: 252px minmax(0, 1fr);
+  align-items: start;
+}
+
+aside {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 30px 17px;
+  background: linear-gradient(180deg, #101d3b 0%, #172e57 100%);
+  box-shadow: 8px 0 32px #15294b14;
+}
+
+.brand {
+  gap: 12px;
+  padding: 0 9px;
+}
+
+.brand strong {
+  letter-spacing: -.25px;
+}
+
+.navlabel {
+  margin: 8px 0 10px;
+}
+
+.nav {
+  min-height: 45px;
+  padding: 12px 13px;
+  margin: 5px 0;
+  border: 1px solid transparent;
+}
+
+.brand .logo {
+  background: linear-gradient(135deg, #71a5ff, #3658e9);
+  box-shadow: 0 5px 18px #547cff55;
+  border-radius: 14px;
+}
+
+.nav {
+  transition: background .2s, transform .2s;
+}
+
+.nav:hover {
+  transform: translateX(3px);
+}
+
+.nav.active {
+  background: linear-gradient(100deg, #4169ef, #3153d7);
+  box-shadow: 0 5px 15px #2848c744;
+  border-color: #ffffff1c;
+}
+
+main {
+  padding: 32px clamp(20px, 3.4vw, 52px) 52px;
+}
+
+.topbar {
+  margin-bottom: 25px;
+}
+
+.topbar h1 {
+  font-size: clamp(25px, 2.4vw, 32px);
+  letter-spacing: -1px;
+  margin: 5px 0;
+}
+
+.topbar .eyebrow {
+  color: #536a9d;
+  letter-spacing: 1.6px;
+}
+
+.pill {
+  box-shadow: 0 5px 16px #273c650b;
+  padding: 10px 15px;
+}
+
+.card {
+  border: 1px solid #e4eaf5;
+  border-radius: 19px;
+  box-shadow: 0 7px 24px #243a600a, 0 1px 2px #243a6008;
+  transition: box-shadow .2s, transform .2s, border-color .2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: #d6e0f2;
+  box-shadow: 0 12px 30px #243a6014;
+}
+
+.stats {
+  gap: 17px;
+  margin-bottom: 25px;
+}
+
+.stats .card {
+  position: relative;
+  overflow: hidden;
+  min-height: 151px;
+  padding: 21px;
+}
+
+.stats .card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, #4169ef, #83a9ff);
+  content: "";
+}
+
+.stats .card:nth-child(2)::before {
+  background: linear-gradient(90deg, #16866b, #69c7a8);
+}
+
+.stats .card:nth-child(3)::before {
+  background: linear-gradient(90deg, #b97817, #f2c66f);
+}
+
+.stats .card:nth-child(4)::before {
+  background: linear-gradient(90deg, #6558d9, #aaa1ff);
+}
+
+.stat-top {
+  align-items: center;
+  color: #697894;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .2px;
+}
+
+.stat-icon {
+  min-width: 40px;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.stat-number {
+  font-size: clamp(30px, 3vw, 38px);
+  letter-spacing: -1.2px;
+  color: #20375e;
+  line-height: 1.15;
+  margin: 16px 0 5px;
+}
+
+.stat-foot {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.grid2 {
+  gap: 19px;
+  margin-bottom: 22px;
+}
+
+.card-head {
+  margin-bottom: 19px;
+}
+
+.card-head h2 {
+  font-size: 16px;
+  letter-spacing: -.25px;
+}
+
+.card-head p {
+  line-height: 1.5;
+}
+
+.btn {
+  border-radius: 9px;
+  background: linear-gradient(110deg, #4169ef, #3453d4);
+  box-shadow: 0 4px 11px #3c5fe524;
+  transition: transform .18s, box-shadow .18s, filter .18s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px #3c5fe533;
+}
+
+.field,
+.formfield input,
+.formfield select,
+.formfield textarea {
+  border-radius: 10px;
+  border-color: #dce5f2;
+}
+
+.field:focus,
+.formfield input:focus,
+.formfield select:focus,
+.formfield textarea:focus {
+  outline: 2px solid #a9baff;
+  border-color: #5273ef;
+}
+
+table th {
+  background: #f5f8fe;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+table td {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+table th:first-child,
+table td:first-child {
+  padding-left: 17px;
+}
+
+tbody tr {
+  transition: background .15s;
+}
+
+.tag {
+  border-radius: 7px;
+  padding: 5px 9px;
+}
+
+.school-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 305px;
+  display: flex;
+  align-items: center;
+  padding: clamp(28px, 4.4vw, 54px);
+  margin-bottom: 25px;
+  border-radius: 23px;
+  color: white;
+  background-color: #142b50;
+  background-image:
+    linear-gradient(100deg, #0b1c3bf2 0%, #102c55e8 43%, #173c68a6 100%),
+    url("https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1800&q=85");
+  background-size: cover;
+  background-position: center 48%;
+  box-shadow: 0 18px 40px #17345b28;
+}
+
+.school-hero::after {
+  position: absolute;
+  z-index: 0;
+  right: -75px;
+  bottom: -190px;
+  width: 440px;
+  height: 440px;
+  border: 1px solid #ffffff20;
+  border-radius: 50%;
+  box-shadow: 0 0 0 35px #ffffff0a, 0 0 0 75px #ffffff08;
+  content: "";
+}
+
+.school-hero-content {
+  position: relative;
+  max-width: 630px;
+  z-index: 1;
+}
+
+.school-hero .eyebrow {
+  color: #c5d8ff;
+  margin-bottom: 9px;
+}
+
+.school-hero h2 {
+  font-size: clamp(34px, 4.4vw, 50px);
+  line-height: 1.12;
+  letter-spacing: -1.3px;
+  margin: 0 0 12px;
+}
+
+.school-hero h2 span {
+  color: #91b9ff;
+}
+
+.school-hero p {
+  max-width: 525px;
+  color: #e0eaff;
+  font-size: 15px;
+  line-height: 1.75;
+  margin: 0 0 20px;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.hero-badges span {
+  border: 1px solid #ffffff42;
+  background: #ffffff17;
+  backdrop-filter: blur(8px);
+  border-radius: 30px;
+  padding: 8px 12px;
+  font-size: 11px;
+}
+
+@media(max-width:650px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  aside {
+    position: relative;
+    top: auto;
+    height: auto;
+    padding: 14px 13px;
+  }
+
+  main {
+    padding: 23px 15px 34px;
+  }
+
+  .topbar {
+    margin-bottom: 20px;
+  }
+
+  .stats .card {
+    min-height: 136px;
+    padding: 15px;
+  }
+
+  .school-hero {
+    min-height: 270px;
+    border-radius: 18px;
+    padding: 27px 21px;
+    background-position: center;
+  }
+
+  .school-hero h2 {
+    font-size: 35px;
+  }
+
+  .school-hero p {
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .hero-badges {
+    gap: 7px;
+  }
+
+  .hero-badges span {
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside>
+  <div class="brand"><div class="logo">E</div><div><strong>EduLens</strong><small>School intelligence platform</small></div></div>
+  <div>
+    <div class="navlabel">WORKSPACE</div>
+    <div class="nav active" data-view="overview"><span>▦</span> Overview</div>
+    <div class="nav" data-view="schools"><span>⌂</span> School directory</div>
+    <div class="nav" data-view="cases"><span>☷</span> Inspection cases</div>
+    <div class="nav" data-view="create"><span>＋</span> Create a case</div>
+  </div>
+  <div class="side-note"><b>Evidence before assumptions</b>Priorities support human review. They are not proof of a violation or a certified compliance result.</div>
+</aside>
+<main>
+  <header class="topbar">
+    <div><div class="eyebrow">EduLens / DATATHON MVP</div><h1 id="pageTitle">School intelligence overview</h1><div class="sub" id="pageSub">A transparent view of school records and follow-up priorities.</div></div>
+    <div class="pill"><span class="dot"></span><span id="apiStatus">Connecting to API…</span></div>
+  </header>
+
+  <section id="view-overview" class="section active">
+    <div class="school-hero">
+      <div class="school-hero-content">
+        <div class="eyebrow">SEE SCHOOLS MORE CLEARLY</div>
+        <h2>Welcome to <span>EduLens</span></h2>
+        <p>
+          Turning school data into meaningful insights.
+          Explore infrastructure records, identify information
+          that needs verification, and track inspection actions
+          in one place.
+        </p>
+        <div class="hero-badges">
+          <span>◈ School intelligence</span>
+          <span>✓ Evidence-based review</span>
+          <span>↗ Action tracking</span>
+        </div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="card"><div class="stat-top">Schools in dataset <span class="stat-icon">⌂</span></div><div class="stat-number" id="totalSchools">—</div><div class="stat-foot">Records loaded from your dataset</div></div>
+      <div class="card"><div class="stat-top">Districts represented <span class="stat-icon">⌖</span></div><div class="stat-number" id="totalDistricts">—</div><div class="stat-foot">Unique district labels</div></div>
+      <div class="card"><div class="stat-top">Missing critical data <span class="stat-icon">◈</span></div><div class="stat-number" id="missingSchools">—</div><div class="stat-foot">Schools with a reported missing-data count above zero</div></div>
+      <div class="card"><div class="stat-top">Open cases <span class="stat-icon">◎</span></div><div class="stat-number" id="openCases">—</div><div class="stat-foot">Inspection cases not yet closed</div></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><div class="card-head"><div><h2>Inspection priority distribution</h2><p>Based on existing dataset categories</p></div><button class="btn secondary small" onclick="showView('schools')">Review schools →</button></div><div id="priorityBars"><div class="loading">Loading priority categories…</div></div><div class="notice">Priority scores are inherited from the dataset. Verify underlying records before taking action.</div></div>
+      <div class="card"><div class="card-head"><div><h2>Data quality snapshot</h2><p>What the source data tells us</p></div></div><div id="qualityBars"><div class="loading">Loading data quality…</div></div><div class="notice">Some facility values are uniform and device ratios may contain sentinel values such as 999. Treat them as requiring verification.</div></div>
+    </div>
+    <div class="card"><div class="card-head"><div><h2>Highest-priority records</h2><p>Start with these records for human review</p></div><button class="btn small" onclick="showView('schools')">View all schools</button></div><div class="tablewrap"><table><thead><tr><th>School</th><th>District</th><th>Priority score</th><th>Category</th><th>Follow-up recommendation</th><th></th></tr></thead><tbody id="topSchools"><tr><td colspan="6" class="loading">Loading records…</td></tr></tbody></table></div></div>
+  </section>
+
+  <section id="view-schools" class="section">
+    <div class="card">
+      <div class="card-head"><div><h2>School directory</h2><p>Search source records and inspect priority reasons.</p></div><span class="tag" id="schoolCount">Loading…</span></div>
+      <div class="filters"><input id="searchInput" class="field" placeholder="Search school name or ID…" /><select id="districtFilter" class="field"><option value="">All districts</option></select><select id="categoryFilter" class="field"><option value="">All priority categories</option><option>High</option><option>Medium</option><option>Low</option></select><button class="btn" id="searchBtn">Search</button><button class="btn ghost" id="resetBtn">Reset</button></div>
+      <div class="tablewrap"><table><thead><tr><th>School</th><th>District</th><th>Management</th><th>Enrollment</th><th>Teachers</th><th>Priority</th><th>Category</th><th></th></tr></thead><tbody id="schoolRows"><tr><td colspan="8" class="loading">Loading schools…</td></tr></tbody></table></div>
+      <div class="bottomrow"><span id="pageInfo">—</span><div class="pager"><button class="btn ghost small" id="prevBtn">← Previous</button><button class="btn ghost small" id="nextBtn">Next →</button></div></div>
+    </div>
+  </section>
+
+  <section id="view-cases" class="section">
+    <div class="card"><div class="card-head"><div><h2>Inspection & corrective-action cases</h2><p>Track issues, ownership, deadlines and verification.</p></div><button class="btn" onclick="showView('create')">＋ New case</button></div>
+      <div class="filters"><select id="caseStatusFilter" class="field"><option value="">All statuses</option><option>Open</option><option>Under Review</option><option>Action Required</option><option>Pending Verification</option><option>Closed</option></select><button class="btn secondary" id="caseFilterBtn">Apply filter</button><button class="btn ghost" id="caseRefreshBtn">Refresh</button></div>
+      <div id="caseList" class="case-list"><div class="loading">Loading cases…</div></div>
+    </div>
+  </section>
+
+  <section id="view-create" class="section">
+    <div class="card" style="max-width:850px"><div class="card-head"><div><h2>Create an inspection case</h2><p>Record an issue for review. Only close after evidence has been verified.</p></div></div>
+      <form id="caseForm">
+        <div class="formgrid">
+          <div class="formfield"><label for="caseSchool">School ID (optional)</label><input id="caseSchool" placeholder="Enter a school ID" /></div>
+          <div class="formfield"><label for="caseCategory">Issue category *</label><select id="caseCategory" required><option value="">Select category</option><option>Infrastructure</option><option>Sanitation</option><option>Drinking water</option><option>Safety</option><option>Data verification</option><option>Teacher availability</option><option>Other</option></select></div>
+          <div class="formfield span2"><label for="caseIssue">Issue / observation *</label><textarea id="caseIssue" required minlength="3" placeholder="Describe the observation and what needs verification…"></textarea></div>
+          <div class="formfield span2"><label for="caseAction">Corrective action required</label><textarea id="caseAction" placeholder="What should the responsible person investigate or correct?"></textarea></div>
+          <div class="formfield"><label for="caseAssignee">Assigned person / role</label><input id="caseAssignee" placeholder="e.g. School administrator" /></div>
+          <div class="formfield"><label for="caseDue">Target due date</label><input id="caseDue" type="date" /></div>
+        </div>
+        <div class="formactions"><button class="btn" type="submit" id="createBtn">Create inspection case</button><button class="btn ghost" type="reset">Clear form</button></div><div id="formMessage" class="message" role="status"></div>
+      </form>
+    </div>
+  </section>
+</main>
+</div>
+
+<div class="modal" id="schoolModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modalbox"><div class="modalhead"><h2 id="modalTitle">School details</h2><button class="close" onclick="closeModal()">Close ✕</button></div><div id="schoolDetails"></div><div style="margin-top:18px"><button class="btn" id="createForSchool">＋ Create inspection case for this school</button></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? "—").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const num = v => v == null || v === "" || !Number.isFinite(Number(v)) ? "—" : Number(v).toLocaleString();
+const short = (v,n=100) => { const s=String(v??"—"); return esc(s.length>n?s.slice(0,n)+"…":s); };
+let offset=0, limit=25, total=0, currentSchool=null, toastTimer;
+const titles={overview:["School intelligence overview","A transparent view of school records and follow-up priorities."],schools:["School directory","Search schools and inspect reported indicators."],cases:["Inspection case management","Track corrective actions and verification status."],create:["Create an inspection case","Turn a documented observation into a trackable action."]};
+async function api(path, options={}) {
+  const res=await fetch(path,{...options,headers:{"Content-Type":"application/json",...(options.headers||{})}});
+  const data=await res.json().catch(()=>({detail:"The server returned an unreadable response."}));
+  if(!res.ok) throw new Error(data.detail || `Request failed (${res.status})`);
+  return data;
+}
+function toast(message){const el=$("toast");el.textContent=message;el.style.display="block";clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.display="none",3200)}
+function showView(name){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  $("view-"+name).classList.add("active");
+  document.querySelectorAll(".nav").forEach(n=>n.classList.toggle("active",n.dataset.view===name));
+  $("pageTitle").textContent=titles[name][0];$("pageSub").textContent=titles[name][1];
+  if(name==="schools") loadSchools();if(name==="cases") loadCases();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav").forEach(n=>n.addEventListener("click",()=>showView(n.dataset.view)));
+function tag(category){
+ const c=String(category||"Unknown"), l=c.toLowerCase();
+ const cls=l.includes("high")||l.includes("critical")||l.includes("red")?"high":l.includes("medium")||l.includes("moderate")||l.includes("amber")?"medium":l.includes("low")||l.includes("green")?"low":"";
+ return `<span class="tag ${cls}">${esc(c)}</span>`;
+}
+function statBar(label,count,totalCount){
+ const width=totalCount?Math.min(100,count/totalCount*100):0;
+ return `<div class="barrow"><span>${esc(label)}</span><div class="track"><div class="fill" style="width:${width}%"></div></div><b>${num(count)}</b></div>`;
+}
+async function loadSummary(){
+ const d=await api("/api/summary");
+ $("totalSchools").textContent=num(d.total_schools);$("totalDistricts").textContent=num(d.districts);
+ $("missingSchools").textContent=num(d.schools_with_missing_critical_data??0);$("openCases").textContent=num(d.open_cases??0);
+ const priority=d.priority_categories||{}, pTotal=Object.values(priority).reduce((a,b)=>a+Number(b),0);
+ $("priorityBars").innerHTML=Object.keys(priority).length?Object.entries(priority).map(([k,v])=>statBar(k,v,pTotal)).join(""):'<div class="empty">No priority categories available.</div>';
+ const quality=d.data_quality_counts||{}, qTotal=Object.values(quality).reduce((a,b)=>a+Number(b),0);
+ $("qualityBars").innerHTML=Object.keys(quality).length?Object.entries(quality).map(([k,v])=>statBar(k,v,qTotal)).join(""):'<div class="empty">No data-quality status column available.</div>';
+ $("apiStatus").textContent="API connected";
+ const result=await api("/api/schools?limit=6&offset=0");
+ $("topSchools").innerHTML=result.items.length?result.items.map(s=>`<tr><td><div class="schoolname">${short(s.school_name,42)}</div><div class="muted">ID ${esc(s.school_id)}</div></td><td>${short(s.district,25)}</td><td>${num(s.inspection_priority_score)}</td><td>${tag(s.inspection_priority_category)}</td><td title="${esc(s.recommended_follow_up)}">${short(s.recommended_follow_up,65)}</td><td><button class="linkbtn" onclick="openSchool('${esc(s.school_id)}')">Inspect →</button></td></tr>`).join(""):'<tr><td colspan="6" class="empty">No school records found.</td></tr>';
+}
+async function loadDistricts(){
+ const items=await api("/api/districts");
+ $("districtFilter").innerHTML='<option value="">All districts</option>'+items.map(d=>`<option value="${esc(d)}">${esc(d)}</option>`).join("");
+}
+async function loadSchools(){
+ $("schoolRows").innerHTML='<tr><td colspan="8" class="loading">Loading school records…</td></tr>';
+ const params=new URLSearchParams({limit:String(limit),offset:String(offset),search:$("searchInput").value.trim(),district:$("districtFilter").value,category:$("categoryFilter").value});
+ try{
+  const d=await api("/api/schools?"+params);total=d.total;
+  $("schoolCount").textContent=`${num(total)} records`;
+  $("pageInfo").textContent=total?`Showing ${offset+1}–${Math.min(offset+limit,total)} of ${num(total)}`:"No matching records";
+  $("prevBtn").disabled=offset===0;$("nextBtn").disabled=offset+limit>=total;
+  $("schoolRows").innerHTML=d.items.length?d.items.map(s=>`<tr><td><div class="schoolname">${short(s.school_name,38)}</div><div class="muted">ID ${esc(s.school_id)}</div></td><td>${short(s.district,23)}</td><td>${short(s.management_type,18)}</td><td>${num(s.total_enrollment)}</td><td>${num(s.total_teachers)}</td><td><b>${num(s.inspection_priority_score)}</b></td><td>${tag(s.inspection_priority_category)}</td><td><button class="linkbtn" onclick="openSchool('${esc(s.school_id)}')">Details →</button></td></tr>`).join(""):'<tr><td colspan="8" class="empty">No matching schools. Try clearing a filter.</td></tr>';
+ }catch(e){$("schoolRows").innerHTML=`<tr><td colspan="8" class="empty">${esc(e.message)}</td></tr>`;toast(e.message)}
+}
+async function openSchool(id){
+ try{
+  const s=await api("/api/schools/"+encodeURIComponent(id));currentSchool=s;
+  $("modalTitle").textContent=s.school_name||"School details";
+  const fields=[
+   ["School ID",s.school_id],["District",s.district],["Management",s.management_type],
+   ["Rural / urban code",s.rural_urban],["Total enrollment",num(s.total_enrollment)],
+   ["Total teachers",num(s.total_teachers)],["Reported pupil-teacher ratio",s.pupil_teacher_ratio],
+   ["Calculated pupil-teacher ratio",s.pupil_teacher_ratio_calculated],
+   ["Priority score",s.inspection_priority_score],["Priority category",s.inspection_priority_category],
+   ["Data quality",s.data_quality_status],["Last data updated",s.last_data_updated],
+   ["Infrastructure completeness",s.infrastructure_completeness_pct==null?"—":s.infrastructure_completeness_pct+"%"],
+   ["Missing critical data count",s.missing_critical_data_count],
+   ["Girls' toilet (reported)",s.functional_girls_toilet],["Drinking water (reported)",s.functional_drinking_water],
+   ["Electricity (reported)",s.electricity_available],["Computers (reported)",s.functional_computers],
+   ["Device ratio (reported)",s.student_device_ratio],["Follow-up recommendation",s.recommended_follow_up]
+  ];
+  $("schoolDetails").innerHTML='<div class="notice">These are source-record values, not independently verified findings. Demo columns and suspicious values should not be treated as confirmed facts.</div><div class="detailgrid">'+fields.map(([k,v])=>`<div class="detail"><small>${esc(k)}</small><strong>${esc(v??"Not available")}</strong></div>`).join("")+'</div>';
+  $("schoolModal").classList.add("show");
+ }catch(e){toast(e.message)}
+}
+function closeModal(){$("schoolModal").classList.remove("show")}
+$("schoolModal").addEventListener("click",e=>{if(e.target===$("schoolModal"))closeModal()});
+$("createForSchool").addEventListener("click",()=>{const s=currentSchool;closeModal();$("caseSchool").value=s?.school_id||"";showView("create")});
+$("searchBtn").addEventListener("click",()=>{offset=0;loadSchools()});
+$("searchInput").addEventListener("keydown",e=>{if(e.key==="Enter"){offset=0;loadSchools()}});
+$("districtFilter").addEventListener("change",()=>{offset=0;loadSchools()});
+$("categoryFilter").addEventListener("change",()=>{offset=0;loadSchools()});
+$("resetBtn").addEventListener("click",()=>{$("searchInput").value="";$("districtFilter").value="";$("categoryFilter").value="";offset=0;loadSchools()});
+$("prevBtn").addEventListener("click",()=>{offset=Math.max(0,offset-limit);loadSchools()});
+$("nextBtn").addEventListener("click",()=>{if(offset+limit<total){offset+=limit;loadSchools()}});
+async function loadCases(){
+ $("caseList").innerHTML='<div class="loading">Loading cases…</div>';
+ try{
+  const status=$("caseStatusFilter").value;
+  const d=await api("/api/cases"+(status?"?status="+encodeURIComponent(status):""));
+  $("caseList").innerHTML=d.items.length?d.items.map(c=>`<div class="caseitem"><div><h3>#${num(c.id)} · ${esc(c.category)} — ${esc(c.school_name||"School not specified")}</h3><p>${short(c.issue,230)}</p><p>Assigned: ${esc(c.assigned_to||"Unassigned")} · Due: ${esc(c.due_date||"Not set")} · Updated: ${esc(c.updated_at||"—")}</p>${c.evidence_notes?`<p>Evidence: ${short(c.evidence_notes,180)}</p>`:""}</div><div class="case-actions">${tag(c.status)}<select class="field" id="status-${c.id}" aria-label="New status for case ${c.id}"><option ${c.status==="Open"?"selected":""}>Open</option><option ${c.status==="Under Review"?"selected":""}>Under Review</option><option ${c.status==="Action Required"?"selected":""}>Action Required</option><option ${c.status==="Pending Verification"?"selected":""}>Pending Verification</option><option ${c.status==="Closed"?"selected":""}>Closed</option></select><button class="btn small" onclick="updateCase(${c.id})">Update</button><button class="btn ghost small" onclick="addEvidence(${c.id})">Evidence</button></div></div>`).join(""):'<div class="empty">No cases yet. Create one from a school record or use “New case”.</div>';
+ }catch(e){$("caseList").innerHTML=`<div class="empty">${esc(e.message)}</div>`}
+}
+async function updateCase(id){
+ const status=$("status-"+id).value;
+ try{await api("/api/cases/"+id,{method:"PATCH",body:JSON.stringify({status})});toast("Case status updated.");await loadCases();await loadSummary()}
+ catch(e){toast("Could not update case: "+e.message)}
+}
+async function addEvidence(id){
+ const notes=prompt("Enter evidence notes or verification details:");
+ if(notes===null)return;
+ try{await api("/api/cases/"+id,{method:"PATCH",body:JSON.stringify({evidence_notes:notes,status:"Pending Verification"})});toast("Evidence notes saved; case set to Pending Verification.");await loadCases()}
+ catch(e){toast("Could not save evidence: "+e.message)}
+}
+$("caseFilterBtn").addEventListener("click",loadCases);$("caseRefreshBtn").addEventListener("click",loadCases);
+$("caseForm").addEventListener("submit",async e=>{
+ e.preventDefault();const btn=$("createBtn"),msg=$("formMessage");
+ const schoolId=$("caseSchool").value.trim();
+ const payload={school_id:schoolId||null,category:$("caseCategory").value,issue:$("caseIssue").value.trim(),action_required:$("caseAction").value.trim(),assigned_to:$("caseAssignee").value.trim(),due_date:$("caseDue").value};
+ btn.disabled=true;btn.textContent="Creating…";msg.textContent="";msg.className="message";
+ try{
+  const c=await api("/api/cases",{method:"POST",body:JSON.stringify(payload)});
+  msg.textContent=`Case #${c.id} created successfully.`;toast("Inspection case created.");
+  $("caseForm").reset();$("openCases").textContent="…";
+  await loadSummary();showView("cases");await loadCases();
+ }catch(err){msg.textContent=err.message;msg.className="message error"}
+ finally{btn.disabled=false;btn.textContent="Create inspection case"}
+});
+async function init(){
+ try{await Promise.all([loadSummary(),loadDistricts()]);$("apiStatus").textContent="API connected"}
+ catch(e){$("apiStatus").textContent="API error";$("apiStatus").style.color="#c44848";toast("Could not load the API. Check that Uvicorn is running: "+e.message)}
+}
+init();
+</script>
+</body>
+</html>
